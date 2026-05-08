@@ -38,7 +38,7 @@ router.post("/register", async (req, res) => {
 
 // LOGIN
 router.post("/login", async (req, res) => {
-   // console.log("Login attempt:", req.body); // Debug log
+    console.log("Login attempt:", req.body); // Debug log
     try {
 
         const { email, password } = req.body;
@@ -72,7 +72,7 @@ router.post("/login", async (req, res) => {
 
         const user = await User.findOne({
             email: email.toLowerCase()
-        });
+        }).select("+password");;
 
         if (!user) {
 
@@ -154,7 +154,8 @@ router.post("/login", async (req, res) => {
 
         res.status(500).json({
             success: false,
-            msg: "Server error"
+            msg: "Server error",
+            error: error.message
         });
 
     }
