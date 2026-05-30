@@ -98,6 +98,13 @@ router.post("/login", async (req, res) => {
             });
 
         }
+// set online status
+        // user.isOnline = true;
+
+        // lasst login update
+        user.lastLogin = new Date();
+
+        await user.save();
 
         // create token
 
@@ -161,10 +168,35 @@ router.post("/login", async (req, res) => {
     }
 
 });
-router.post("/logout", (req, res) => {
-
+router.post("/logout", async (req, res) => {
+    const token = req.cookies.token;
+    if (!token) {
+        return res.status(400).json({
+            success: false,
+            msg: "No token provided"
+        });
+    }
+    let decoded;
+    try {
+        decoded = jwt.verify(token, process.env.JWT_SECRET);
+    } catch (err) {
+        return res.status(400).json({
+            success: false,
+            msg: "Invalid token"
+        });
+    }
+    const user = await User.findById(decoded.id);
+    if (!user) {
+        return res.status(400).json({
+            success: false,
+            msg: "User not found"
+        });
+    }
+    // user.isOnline = false;
     res.clearCookie("token");
+   
 
+    await user.save();
     res.json({
         success: true,
         msg: "Logout successful"

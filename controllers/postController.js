@@ -210,15 +210,21 @@ export const getPost = async (req, res) => {
     }
 };
 export const createPost = async (req, res) => {
+    // console.log(JSON.stringify(req.body.sections, null, 2));
+    // return res.status(200).json({
+
+    //     response: null,
+      
+    // });
 
     try {
 
         const body = req.body;
 
-        console.log(
-            "Received POST request:",
-            body
-        );
+        // console.log(
+        //     "Received POST request:",
+        //     body
+        // );
 
         // slug check
 
@@ -229,15 +235,13 @@ export const createPost = async (req, res) => {
 
         if (existingPost) {
 
-            return res.status(400).json({
+            return res.status(200).json({
 
                 response: null,
 
                 success: false,
 
-                message:
-                    "Post slug already exists"
-
+                message: "Post slug already exists"
             });
 
         }
@@ -274,7 +278,7 @@ export const createPost = async (req, res) => {
         return res.status(500).json({
 
             response: null,
-
+message: error,
             success: false,
 
             message: "Server error"
@@ -396,7 +400,7 @@ export const updatePost = async (
         return res.status(500).json({
 
             success: false,
-
+            error: error,
             message: "Server error"
 
         });
@@ -404,132 +408,78 @@ export const updatePost = async (
     }
 
 };
-export const getPosts = async (
-    req,
-    res
-) => {
-
+export const getPosts = async (req, res) => {
     try {
-
         const {
             search = "",
-            status,
+            status = "all",
+            organization = "all",
             page = 1,
             limit = 10,
             sortField = "createdAt",
             sortOrder = "desc",
         } = req.query;
 
-        // search query
+        const searchQuery = {};
 
-        const searchQuery = {
-
-            title: {
+        // Search
+        if (search.trim()) {
+            searchQuery.title = {
                 $regex: search,
                 $options: "i",
-            },
-
-        };
-
-        // status filter
-
-        if (
-            status &&
-            status !== "all"
-        ) {
-
-            searchQuery.status =
-                status;
-
+            };
         }
 
-        // role based filter
-
-        if (
-            req.user.role === "editor"
-        ) {
-
-            searchQuery.createdBy =
-                req.user.id;
-
+        // Organization Filter
+        if (organization && organization !== "all") {
+            searchQuery.organization = organization;
         }
 
-        // sorting
+        // Status Filter
+        if (status && status !== "all") {
+            searchQuery.status = status;
+        }
 
+        // Editor can only see own posts
+        if (req.user.role === "editor") {
+            searchQuery.createdBy = req.user.id;
+        }
+
+        // Sorting
         const sort = {
-
-            [sortField]:
-                sortOrder === "asc"
-                    ? 1
-                    : -1,
-
+            [sortField]: sortOrder === "asc" ? 1 : -1,
         };
 
-        // pagination
+        // Pagination
+        const skip = (Number(page) - 1) * Number(limit);
 
-        const skip =
-            (page - 1) * limit;
+        // Posts
+        const posts = await Post.find(searchQuery)
+            .populate("createdBy", "name email role")
+            .populate("organization", "organisationName")
+            .sort(sort)
+            .skip(skip)
+            .limit(Number(limit));
 
-        // get posts
-
-        const posts =
-            await Post.find(searchQuery)
-
-                .populate(
-                    "createdBy",
-                    "name email role"
-                )
-
-                .sort(sort)
-
-                .skip(skip)
-
-                .limit(Number(limit));
-
-        // total
-
-        const total =
-            await Post.countDocuments(
-                searchQuery
-            );
-     // console.log("Posts fetched:",posts);
+        // Count
+        const total = await Post.countDocuments(searchQuery);
 
         return res.status(200).json({
-
             success: true,
-
             posts,
-
             total,
-
-            currentPage:
-                Number(page),
-
-            totalPages:
-                Math.ceil(
-                    total / limit
-                ),
-
+            currentPage: Number(page),
+            totalPages: Math.ceil(total / Number(limit)),
         });
 
     } catch (error) {
-
-        console.log(
-            "Get posts error:",
-            error
-        );
+        console.log("Get posts error:", error);
 
         return res.status(500).json({
-
             success: false,
-
-            message:
-                "Server error"
-
+            message: "Server error",
         });
-
     }
-
 };
 export const deletePost = async (
     req,

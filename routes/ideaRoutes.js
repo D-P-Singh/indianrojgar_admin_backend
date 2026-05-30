@@ -8,14 +8,15 @@ import {
     convertToPost
 } from "../controllers/ideaController.js";
 import { auth, authorizeRoles } from "../middleware/auth.js";
+import { updateLastSeen } from "../middleware/lastseenMiddleware.js";
 
 const router = express.Router();
 
-router.post("/",auth,authorizeRoles("admin"),createIdea);
-router.get("/", auth, authorizeRoles("admin"), getIdeas);
-router.get("/:id", auth, authorizeRoles("admin"), getIdeaById);
-router.put("/:id", auth, authorizeRoles("admin"), updateIdea);
-router.delete("/:id", auth, authorizeRoles("admin"), deleteIdea);
+router.post("/", auth, updateLastSeen ,authorizeRoles("admin"),createIdea);
+router.get("/", auth, updateLastSeen, authorizeRoles("admin"), getIdeas);
+router.get("/:id", auth, updateLastSeen, authorizeRoles("admin"), getIdeaById);
+router.put("/:id", auth, updateLastSeen, authorizeRoles("admin"), updateIdea);
+router.delete("/:id", auth, updateLastSeen, authorizeRoles("admin"), deleteIdea);
 
 // 🔥 special route
 router.post("/convert/:id", convertToPost);

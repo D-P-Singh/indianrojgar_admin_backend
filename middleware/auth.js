@@ -38,7 +38,7 @@ export const auth = async (
 export const authorizeRoles = (...roles) => {
 
     return (req, res, next) => {
-        console.log("Authorizing roles:", req.user);
+       // console.log("Authorizing roles:", req.user);
         //         if(!req.user.isVerified) {
         // console.log("User is not verified:", req.user);
         // res.redirect("/login");

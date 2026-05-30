@@ -22,6 +22,8 @@ const SettingsSchema = new mongoose.Schema({
         }
     },
 
+    /* ================= ORGANIZATIONS ================= */
+
     /* ================= BRANDING ================= */
 
     branding: {
@@ -144,7 +146,6 @@ const SettingsSchema = new mongoose.Schema({
         copyrightText: String
     },
 
-}, { timestamps: true })
+}, { timestamps: true });
 
-export default mongoose.models.Settings ||
-    mongoose.model("Settings", SettingsSchema)
+export default mongoose.model("Settings", SettingsSchema)

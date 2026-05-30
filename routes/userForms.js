@@ -1,6 +1,7 @@
 import express from "express";
 import UserForm from "../models/User-form.js";
 import { auth, authorizeRoles } from "../middleware/auth.js";
+import { updateLastSeen } from "../middleware/lastseenMiddleware.js";
 
 const router = express.Router();
 
@@ -23,7 +24,7 @@ router.post("/", async (req, res) => {
 });
 
 // ✅ Get all forms (Admin)
-router.get("/", auth, authorizeRoles("admin"), async (req, res) => {
+router.get("/", auth, updateLastSeen, authorizeRoles("admin"), async (req, res) => {
     try {
         const forms = await UserForm.find().sort({ createdAt: -1 });
         res.json(forms);
@@ -33,7 +34,7 @@ router.get("/", auth, authorizeRoles("admin"), async (req, res) => {
 });
 
 // ✅ Update status
-router.put("/:id", auth, authorizeRoles("admin"), async (req, res) => {
+router.put("/:id", auth, updateLastSeen, authorizeRoles("admin"), async (req, res) => {
     try {
         const { status } = req.body;
 
@@ -50,7 +51,7 @@ router.put("/:id", auth, authorizeRoles("admin"), async (req, res) => {
 });
 
 // ✅ Delete
-router.delete("/:id", auth, authorizeRoles("admin"), async (req, res) => {
+router.delete("/:id", auth, updateLastSeen, authorizeRoles("admin"), async (req, res) => {
 
     res.send("Delete route works, but is disabled for safety. Check code for details.")
     // try {

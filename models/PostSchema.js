@@ -146,8 +146,37 @@ const PostSchema = new mongoose.Schema(
             required: true,
             index: true,
         },
-        organization: { type: String, required: true },
+        organization: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Organization"
+        },
+        //state
+        eligibleStates: [
+            {
+                type: String,
+                default: "All India",
+            },
+        ],
 
+        // Minimum qualification
+        qualification: {
+            type: String,
+            default: "10", // 8, 10, 12, Graduate, Post_Graduate
+        },
+
+        // Age limit
+        ageLimit: {
+            min: {
+                type: Number,
+                default: 18,
+            },
+
+            max: {
+                type: Number,
+                default: 65,
+            },
+
+        },
         /* ===================== SEO ===================== */
         metaTitle: { type: String },
         metaDescription: { type: String },

@@ -8,6 +8,8 @@ import settingRoutes from "./routes/settingRoutes.js";
 import cookieParser from "cookie-parser";
 import profileRoutes from "./routes/profileRoutes.js";
 import statesRoutes from "./routes/statesRoutes.js";
+import userRoutes from "./routes/userRoutes.js";
+import {updateLastSeen} from "./middleware/lastseenMiddleware.js"; 
 import dotenv from "dotenv";
 //import "./cron/scheduler.js";
 dotenv.config();
@@ -42,8 +44,18 @@ app.use("/api/track", trackingRoutes);
 app.use("/api/settings", settingRoutes);
 app.use("/api/stats", statesRoutes);
 
+app.use("/api/users", userRoutes);
+
+import organisationRoutes from "./routes/organisationRoutes.js";
+app.use("/api/organisations", organisationRoutes);
+
 import ideaRoutes from "./routes/ideaRoutes.js";
 app.use("/api/ideas", ideaRoutes);
+import checkNotificationRoutes from "./routes/checknotificationRoutes.js";
+
+app.use("/api/notification",checkNotificationRoutes)
+
+
 app.listen(process.env.PORT || 5000, () => {
     console.log("Server running on port " + (process.env.PORT || 5000));
 });
