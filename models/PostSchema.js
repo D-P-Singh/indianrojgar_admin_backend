@@ -17,7 +17,7 @@ import mongoose from "mongoose";
 // );
 const FieldSchema = new mongoose.Schema(
     {
-        label: { type: String, required: true },
+        label: { type: String, /* required: true */ },
         value: { type: mongoose.Schema.Types.Mixed },
         type: {
             type: String,
@@ -39,7 +39,7 @@ const FieldSchema = new mongoose.Schema(
 /* ===================== TABLE SCHEMAS ===================== */
 const TableColumnSchema = new mongoose.Schema(
     {
-        label: { type: String, required: true },
+        label: { type: String, /* required: true */ },
         //^ ⭐ ADD THIS FIELD
         type: {
             type: String,
@@ -129,7 +129,7 @@ const PostSchema = new mongoose.Schema(
         slug: { type: String, required: true, unique: true, lowercase: true },
         shortDescription: {
             type: String,
-            maxlength: 500,
+            maxlength: 1000,
         },
         category: {
             type: String,

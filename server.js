@@ -51,9 +51,7 @@ app.use("/api/organisations", organisationRoutes);
 
 import ideaRoutes from "./routes/ideaRoutes.js";
 app.use("/api/ideas", ideaRoutes);
-import checkNotificationRoutes from "./routes/checknotificationRoutes.js";
 
-app.use("/api/notification",checkNotificationRoutes)
 
 
 app.listen(process.env.PORT || 5000, () => {
