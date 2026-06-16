@@ -50,9 +50,18 @@ import organisationRoutes from "./routes/organisationRoutes.js";
 app.use("/api/organisations", organisationRoutes);
 
 import ideaRoutes from "./routes/ideaRoutes.js";
+import migratePostCategories from "./scripts/post.js";
 app.use("/api/ideas", ideaRoutes);
 
-
+app.get("/migration", (req, res) => {
+  try {  // Call your migration function here
+     migratePostCategories();
+    res.send("Migration started. Check console for details.");
+  } catch (error) {
+    console.error("Migration error:", error);
+    res.status(500).send("Migration failed. Check console for details.");
+  }
+});
 
 app.listen(process.env.PORT || 5000, () => {
     console.log("Server running on port " + (process.env.PORT || 5000));

@@ -132,20 +132,24 @@ const PostSchema = new mongoose.Schema(
             maxlength: 1000,
         },
         category: {
-            type: String,
-            enum: [
-                "latest-job",
-                "result",
-                "admit-card",
-                "answer-key",
-                "syllabus",
-                "admission",
-                "important",
-                "government-scheme",
-            ],
-            required: true,
-            index: true,
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Category"
         },
+        // category: {
+        //     type: String,
+        //     enum: [
+        //         "latest-job",
+        //         "result",
+        //         "admit-card",
+        //         "answer-key",
+        //         "syllabus",
+        //         "admission",
+        //         "important",
+        //         "government-scheme",
+        //     ],
+        //     required: true,
+        //     index: true,
+        // },
         organization: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "Organization"
@@ -201,7 +205,7 @@ const PostSchema = new mongoose.Schema(
         createdBy: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "User",
-            required: true
+            //required: true
         },
         updates: [
             {

@@ -3,7 +3,7 @@ import Organisation from "../models/Organization.js";
 // Create Organisation
 export const createOrganisation = async (req, res) => {
     try {
-        const { organisationName, officialWebsite, notificationPageLink, logo, description } = req.body;
+        const { organisationName,shortName, officialWebsite, notificationPageLink, logo, description } = req.body;
 
         if (!organisationName) {
             return res.status(400).json({ success: false, message: "Organisation name required" });
@@ -21,6 +21,7 @@ export const createOrganisation = async (req, res) => {
             notificationPageLink,
             logo,
             description,
+            shortName,
         });
 
         return res.status(201).json({ success: true, data: org });
